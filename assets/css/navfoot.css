@@ -1,0 +1,101 @@
+.navbar {
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  background-color: #ffffff;
+}
+
+.logo {
+  height: 45px;     /* control logo size */
+  width: auto;      /* keeps proportions */
+  display: block;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #4a0e0e;
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px 40px;
+  }
+  nav { display: flex; gap: 20px; }
+}
+
+nav a {
+  margin-left: 18px;
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+}
+
+nav a:hover { color: #b02a2a; }
+.login { font-weight: bold; }
+
+.footer {
+  background-color: #7b0000; /* maroon */
+  color: white;
+  padding: 15px 40px;
+  font-family: Arial, sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.social-icons a img {
+  width: 32px;      /* adjust size as needed */
+  height: 32px;
+  margin-right: 12px;
+  transition: transform 0.3s ease;
+}
+
+.social-icons a:hover img {
+  transform: scale(1.2);  /* makes it pop on hover */
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-links span {
+  margin: 0 8px;
+  color: white;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-right {
+  font-size: 14px;
+}
+
+@media (max-width:600px) {
+  .hero h1 { font-size:1.5rem; }
+  .grid { column-gap:10px; }
+  nav a { margin-left:10px; font-size:0.95rem; }
+}

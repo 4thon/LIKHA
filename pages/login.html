@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Likha | User Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Angkor&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../assets/css/login.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <div class="brand">
+      <a href="../index.html">
+        <img src="../assets/images/ui/logo.png" alt="Likha Logo" class="logo">
+      </a>
+    </div>
+    <nav class="nav">
+      <a href="accessories.html">Accessories</a>
+      <a href="jewelry.html">Jewelry</a>
+      <a href="clothing.html">Clothing</a>
+      <a href="home-decor.html">Home &amp; Decor</a>
+      <a href="login.html" class="login active">Login</a>
+    </nav>
+  </header>
+
+  <main class="auth">
+    <section class="auth-media">
+      <div class="media-stack auto-morph" data-start="0" data-interval="5200">
+        <div class="media-card primary">
+          <img src="../assets/images/products/crochetbag.jpg" alt="Red crochet bag">
+        </div>
+        <div class="media-card secondary">
+          <img src="../assets/images/products/crochet.jpg" alt="Crochet pouch set">
+        </div>
+      </div>
+      <p class="media-title">Find Handmade <span>Accessories</span></p>
+      <div class="media-hearts" aria-hidden="true">
+        <span class="heart filled">&#9829;</span>
+        <span class="heart">&#9825;</span>
+        <span class="heart">&#9825;</span>
+        <span class="heart">&#9825;</span>
+      </div>
+    </section>
+
+    <section class="auth-form">
+      <h1 class="form-title">Welcome back!</h1>
+      <p class="form-subtitle">Enter your Credentials to access your account</p>
+
+      <form id="loginForm" action="dashboard.html">
+        <div class="input-group">
+          <label class="input-label" for="email">Email address</label>
+          <input
+            type="email"
+            class="input-field"
+            id="email"
+            placeholder="Enter your email"
+            required
+          >
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="password">
+            <span>Password</span>
+            <button
+              type="button"
+              class="forgot-password"
+              id="forgotPassword"
+              data-modal-target="#resetModal"
+            >
+              forgot password
+            </button>
+          </label>
+          <div class="password-field">
+            <input
+              type="password"
+              class="input-field"
+              id="password"
+              placeholder="Enter your password"
+              required
+            >
+            <button
+              type="button"
+              class="toggle-pass"
+              data-toggle-password
+              data-target="password"
+              aria-label="Show password"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn">Login</button>
+        <div class="error-message" id="errorMessage"></div>
+      </form>
+
+      <p class="helper-text">
+        Don't have an account?
+        <a href="sign-up.html" class="helper-link" id="registerLink">Register</a>
+      </p>
+      <p class="policy-row">
+        By continuing, you agree to our
+        <button type="button" class="policy-link" data-modal-target="#termsModal">Terms &amp; Policy</button>
+        and
+        <button type="button" class="policy-link" data-modal-target="#privacyModal">Privacy Policy</button>.
+      </p>
+    </section>
+  </main>
+
+  <div class="modal" id="termsModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button>
+      <h2 id="termsTitle">Terms &amp; Policy</h2>
+      <p>
+        By using Likha, you agree to use the platform respectfully and follow all applicable laws.
+        Items shown are handmade by independent creators, and availability may vary.
+      </p>
+      <p>
+        Orders, commissions, and payments should be handled with honesty and fairness. We reserve
+        the right to moderate listings or accounts that violate community guidelines.
+      </p>
+    </div>
+  </div>
+
+  <div class="modal" id="privacyModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button>
+      <h2 id="privacyTitle">Privacy Policy</h2>
+      <p>
+        Your account details are used only to support your login, orders, and platform experience.
+        We do not sell personal information to third parties.
+      </p>
+      <p>
+        Basic analytics may be collected to improve the site. You can request account updates or
+        removal by contacting support.
+      </p>
+    </div>
+  </div>
+
+  <div class="modal" id="resetModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button>
+      <h2 id="resetTitle">Reset Password</h2>
+      <p>Please enter your email and a new password to reset your account.</p>
+      <form id="resetForm" class="modal-form">
+        <div class="input-group">
+          <label class="input-label" for="resetEmail">Email address</label>
+          <input
+            type="email"
+            class="input-field"
+            id="resetEmail"
+            placeholder="Enter your email"
+            required
+          >
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="resetOtp">OTP Code</label>
+          <input
+            type="text"
+            class="input-field"
+            id="resetOtp"
+            placeholder="Enter 6-digit code"
+            inputmode="numeric"
+            maxlength="6"
+            required
+          >
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="resetPassword">New password</label>
+          <div class="password-field">
+            <input
+              type="password"
+              class="input-field"
+              id="resetPassword"
+              placeholder="Enter new password"
+              required
+            >
+            <button
+              type="button"
+              class="toggle-pass"
+              data-toggle-password
+              data-target="resetPassword"
+              aria-label="Show password"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="resetConfirm">Confirm password</label>
+          <div class="password-field">
+            <input
+              type="password"
+              class="input-field"
+              id="resetConfirm"
+              placeholder="Confirm new password"
+              required
+            >
+            <button
+              type="button"
+              class="toggle-pass"
+              data-toggle-password
+              data-target="resetConfirm"
+              aria-label="Show password"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="reset-message" id="resetMessage"></div>
+        <button type="submit" class="primary-btn">Update Password</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/store.js"></script>
+  <script src="../assets/js/script.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/morph-sets.js"></script>
+  <script src="../assets/js/modal.js"></script>
+</body>
+</html>

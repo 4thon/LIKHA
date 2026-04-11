@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Likha | Profile Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Angkor&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/profile.css" />
+</head>
+<body data-auth="required">
+  <div class="page">
+    <header class="topbar" id="topbar">
+      <div class="brand">
+        <a href="../index.html">
+          <img src="../assets/images/ui/logo.png" alt="Likha Logo" class="logo" />
+        </a>
+      </div>
+      <div class="topbar-right">
+        <nav class="nav">
+          <a href="accessories.html">Accessories</a>
+          <a href="jewelry.html">Jewelry</a>
+          <a href="clothing.html">Clothing</a>
+          <a href="home-decor.html">Home &amp; Decor</a>
+          <a href="login.html" class="login">Login</a>
+        </nav>
+        <div class="notif-wrap">
+          <button class="notif-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+              <path d="M13.73 21a2 2 0 01-3.46 0" />
+            </svg>
+          </button>
+          <span class="notif-badge">0</span>
+          <div class="notif-panel" aria-hidden="true">
+            <h4>Recent Activity</h4>
+            <div class="notif-list"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <aside class="sidebar">
+        <a class="side-btn" href="LikedItems.html">
+          <span class="side-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21s-7-4.35-7-10a4 4 0 017-2 4 4 0 017 2c0 5.65-7 10-7 10z" />
+            </svg>
+          </span>
+          Liked Items
+        </a>
+        <a class="side-btn" href="commission.html">
+          <span class="side-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h12a2 2 0 012 2z" />
+            </svg>
+          </span>
+          Commission Request
+        </a>
+        <a class="side-btn active" href="profile.html">
+          <span class="side-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20a8 8 0 0116 0" />
+            </svg>
+          </span>
+          Profile Settings
+        </a>
+        <a class="side-btn" href="my-works.html">
+          <span class="side-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 3h7v7" />
+              <path d="M10 14L21 3" />
+              <path d="M21 14v7h-7" />
+              <path d="M3 10V3h7" />
+              <path d="M3 14v7h7" />
+            </svg>
+          </span>
+          My Works
+        </a>
+        <button class="side-btn" type="button" data-logout>
+          <span class="side-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <path d="M16 17l5-5-5-5" />
+              <path d="M21 12H9" />
+            </svg>
+          </span>
+          Logout
+        </button>
+      </aside>
+
+      <section class="content">
+        <div class="content-header">
+          <h1 id="profileHeaderTitle">Profile Settings</h1>
+          <p id="profileHeaderSubtitle">Keep your artist information up to date.</p>
+        </div>
+
+        <div class="profile-layout">
+          <section class="profile-card">
+            <img
+              class="profile-avatar"
+              src="../assets/images/accessories/a.12.jpg"
+              alt="Artist profile"
+            />
+            <div class="profile-handle" id="profileHandle">@Winawinawins</div>
+            <div class="profile-email" id="profileEmail">user@gmail.com</div>
+
+            <div class="profile-info">
+              <h3>Information</h3>
+              <div class="info-line"><span>Name:</span> <span id="profileName">Lapuz, Alwina A.</span></div>
+              <div class="info-line"><span>Email:</span> <span id="profileEmailInfo">alwinalapuz15@gmail.com</span></div>
+              <div class="info-line"><span>Tel:</span> <span id="profileTelInfo">+51 966 696 123</span></div>
+              <div class="info-line">
+                <span>Address:</span> <span id="profileAddress">62 Bagong taon St. Sta. Tomas, Pasig</span>
+              </div>
+              <div class="info-line"><span>Short Bio:</span> <span id="profileBio">lovesepag</span></div>
+            </div>
+          </section>
+
+          <section class="settings-card">
+            <h2>User Settings</h2>
+
+            <div class="settings-section">
+              <h3>Details</h3>
+              <div class="form-grid">
+                <label class="input-field">
+                  Name
+                  <input type="text" id="profileFirstName" placeholder="Pepito Rodrick ..." />
+                </label>
+                <label class="input-field">
+                  Last Name
+                  <input type="text" id="profileLastName" placeholder="Coronel Siufentes ..." />
+                </label>
+                <label class="input-field">
+                  Email
+                  <input type="email" id="profileEmailInput" placeholder="pepito.sifuentas@unilu.pe" />
+                </label>
+                <label class="input-field">
+                  Tel - Number
+                  <input type="text" id="profileTelInput" placeholder="+51 968 123 456" />
+                </label>
+              </div>
+              <button class="primary-btn save-btn" type="button" data-save-profile>Save changes</button>
+            </div>
+
+            <div class="settings-section">
+              <h3>Change Address</h3>
+              <div class="form-grid">
+                <label class="input-field">
+                  Address
+                  <input type="text" id="profileAddressInput" placeholder="Put your address..." />
+                </label>
+                <label class="input-field">
+                  Confirm Address
+                  <input type="text" id="profileAddressConfirm" placeholder="Confirm address..." />
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Change Password</h3>
+              <div class="form-grid">
+                <label class="input-field">
+                  New Password
+                  <input type="password" id="profilePassword" placeholder="Put your new password..." />
+                </label>
+                <label class="input-field">
+                  Confirm Password
+                  <input type="password" id="profilePasswordConfirm" placeholder="Confirm new password..." />
+                </label>
+              </div>
+              <div class="settings-actions">
+                <button class="primary-btn save-btn" type="button" data-save-profile>Save changes</button>
+                <a class="forgot-link" href="#">Forgot your password?</a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../assets/js/store.js"></script>
+  <script src="../assets/js/activity.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/script.js"></script>
+  <script src="../assets/js/profile-setup.js"></script>
+  <script src="../assets/js/auth.js"></script>
+</body>
+</html>

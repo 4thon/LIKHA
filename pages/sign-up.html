@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Likha | Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Angkor&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../assets/css/sign-up.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <div class="brand">
+      <a href="../index.html">
+        <img src="../assets/images/ui/logo.png" alt="Likha Logo" class="logo">
+      </a>
+    </div>
+    <nav class="nav">
+      <a href="accessories.html">Accessories</a>
+      <a href="jewelry.html">Jewelry</a>
+      <a href="clothing.html">Clothing</a>
+      <a href="home-decor.html">Home &amp; Decor</a>
+      <a href="login.html" class="login">Login</a>
+    </nav>
+  </header>
+
+  <main class="auth">
+    <section class="auth-media">
+      <div class="media-stack auto-morph" data-start="2" data-interval="5200">
+        <div class="media-card primary">
+          <img src="../assets/images/accessories/a.12.jpg" alt="Pink charm necklace">
+        </div>
+        <div class="media-card secondary">
+          <img src="../assets/images/products/bracelet.jpg" alt="Star charm bracelet">
+        </div>
+      </div>
+      <p class="media-title">Find Handmade <span>Jewelries</span></p>
+      <div class="media-hearts" aria-hidden="true">
+        <span class="heart">&#9825;</span>
+        <span class="heart filled">&#9829;</span>
+        <span class="heart">&#9825;</span>
+        <span class="heart">&#9825;</span>
+      </div>
+    </section>
+
+    <section class="auth-form">
+      <h1 class="form-title">Get Started Now</h1>
+
+      <form id="signupForm">
+        <div class="input-group">
+          <label class="input-label" for="name">Name</label>
+          <input
+            type="text"
+            class="input-field"
+            id="name"
+            placeholder="Enter your name"
+            required
+          >
+          <div class="field-error" data-error-for="name"></div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="email">Email address</label>
+          <input
+            type="email"
+            class="input-field"
+            id="email"
+            placeholder="Enter your email"
+            required
+          >
+          <div class="field-error" data-error-for="email"></div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="phone">Phone Number</label>
+          <input
+            type="tel"
+            class="input-field"
+            id="phone"
+            placeholder="Enter your phone number"
+            required
+          >
+          <div class="field-error" data-error-for="phone"></div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="password">Password</label>
+          <div class="password-field">
+            <input
+              type="password"
+              class="input-field"
+              id="password"
+              placeholder="Enter your password"
+              required
+            >
+            <button
+              type="button"
+              class="toggle-pass"
+              data-toggle-password
+              data-target="password"
+              aria-label="Show password"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+          <div class="field-error" data-error-for="password"></div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="confirmPassword">Confirm Password</label>
+          <div class="password-field">
+            <input
+              type="password"
+              class="input-field"
+              id="confirmPassword"
+              placeholder="Confirm your password"
+              required
+            >
+            <button
+              type="button"
+              class="toggle-pass"
+              data-toggle-password
+              data-target="confirmPassword"
+              aria-label="Show password"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+          <div class="field-error" data-error-for="confirmPassword"></div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Login Method</label>
+          <div class="option-row">
+            <label class="option-chip">
+              <input type="radio" name="loginMethod" value="email" checked>
+              <span>Email</span>
+            </label>
+            <label class="option-chip">
+              <input type="radio" name="loginMethod" value="otp">
+              <span>OTP</span>
+            </label>
+          </div>
+          <div class="field-error" data-error-for="loginMethod"></div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="terms" class="checkbox-input" required>
+          <label for="terms" class="checkbox-label">
+            I agree to the
+            <button type="button" class="policy-link" data-modal-target="#termsModal">terms &amp; policy</button>
+          </label>
+        </div>
+        <div class="field-error" data-error-for="terms"></div>
+
+        <button type="submit" class="primary-btn">Signup</button>
+        <div class="error-message" id="errorMessage"></div>
+      </form>
+
+      <p class="helper-text">
+        Have an account?
+        <a href="login.html" class="helper-link">Sign In</a>
+      </p>
+      <p class="policy-row">
+        Read our
+        <button type="button" class="policy-link" data-modal-target="#privacyModal">Privacy Policy</button>.
+      </p>
+    </section>
+  </main>
+
+  <div class="modal" id="termsModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button>
+      <h2 id="termsTitle">Terms &amp; Policy</h2>
+      <p>
+        By creating an account, you agree to use Likha responsibly and respect the creators on the
+        platform. Listings are handmade and may vary per artist availability.
+      </p>
+      <p>
+        We may review or remove content that violates community rules. Please keep all transactions
+        honest and respectful.
+      </p>
+    </div>
+  </div>
+
+  <div class="modal" id="privacyModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+      <button class="modal-close" type="button" data-modal-close aria-label="Close">&times;</button>
+      <h2 id="privacyTitle">Privacy Policy</h2>
+      <p>
+        We collect only the information needed to create your account and support your experience.
+        Your data is never sold to third parties.
+      </p>
+      <p>
+        You can request updates or deletion of your account by contacting our support team.
+      </p>
+    </div>
+  </div>
+
+  <script src="../assets/js/store.js"></script>
+  <script src="../assets/js/signup-script.js"></script>
+  <script src="../assets/js/morph-sets.js"></script>
+  <script src="../assets/js/modal.js"></script>
+</body>
+</html>
