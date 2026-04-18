@@ -19,6 +19,10 @@ body {
   color: var(--text);
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -496,6 +500,13 @@ body.locked .grid {
   border-radius: 12px;
   border: 1px solid var(--border);
   background: #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inbox-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
 .inbox-item img {

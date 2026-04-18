@@ -20,6 +20,25 @@
     return hash;
   };
 
+  const normalizeTokens = (value = "") =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter(Boolean);
+
+  const scoreNameMatch = (inputName, artistName) => {
+    const inputTokens = normalizeTokens(inputName);
+    const artistTokens = normalizeTokens(artistName);
+    if (!inputTokens.length || !artistTokens.length) return 0;
+
+    const inputNormalized = inputTokens.join(" ");
+    const artistNormalized = artistTokens.join(" ");
+    if (inputNormalized === artistNormalized) return 100;
+
+    return inputTokens.filter((token) => artistTokens.includes(token)).length;
+  };
+
   const getLikeCount = (item) => {
     const base = hashNumber(item.id || item.title || "likha");
     return 80 + (base % 60);
@@ -29,13 +48,13 @@
     id: "likha-default",
     title: "Handmade Crochet Wallet",
     maker: "Alwina Lapuz",
-    price: "₱80",
+    price: "PHP 80",
     image: "assets/images/accessories/a.2.jpg",
     category: "Accessories",
     description: "Kindly email the design you want based on the picture.",
   };
 
-  const item = store.get(ACTIVE_KEY) || defaultItem;
+  const item = { ...(store.get(ACTIVE_KEY) || defaultItem) };
   window.LIKHA_ACTIVE_ITEM = item;
 
   const imageEl = document.getElementById("itemImage");
@@ -118,19 +137,32 @@
     });
   }
 
-  const commissionLink = document.getElementById("commissionLink");
   const artists = window.LIKHA_ARTISTS || [];
-  if (commissionLink) {
-    const makerName = (item.maker || "").toLowerCase();
-    const match = artists.find((artist) => {
-      const artistName = (artist.name || "").toLowerCase();
-      return (
-        makerName &&
-        (artistName.includes(makerName) || makerName.includes(artistName))
-      );
-    });
-    if (match) {
-      commissionLink.href = `artist.html?artist=${match.id}`;
+  const makerName = item.maker || "";
+  let match = null;
+  let bestScore = 0;
+
+  artists.forEach((artist) => {
+    const score = scoreNameMatch(makerName, artist.name || "");
+    if (score > bestScore) {
+      bestScore = score;
+      match = artist;
     }
+  });
+
+  if (match && bestScore >= 1) {
+    item.artistId = match.id;
+    item.artistName = match.name;
+    window.LIKHA_ACTIVE_ITEM = item;
+    store.set(ACTIVE_KEY, item);
+  }
+
+  const quickCommissionArtist = document.getElementById("quickCommissionArtist");
+  const quickCommissionItem = document.getElementById("quickCommissionItem");
+  if (quickCommissionArtist) {
+    quickCommissionArtist.value = match?.name || item.maker || "Likha Artist";
+  }
+  if (quickCommissionItem) {
+    quickCommissionItem.value = item.title || "Handmade Item";
   }
 })();

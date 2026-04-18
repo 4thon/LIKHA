@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const gatedAction = event.target.closest(
-        ".like, [data-buy], [data-add-cart]"
+        ".like, [data-buy], [data-add-cart], [data-open-commission]"
       );
       if (!gatedAction) return;
       if (!isLoggedIn()) {

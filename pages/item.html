@@ -68,7 +68,7 @@
             <span class="cart-count" data-cart-count>0</span>
           </button>
           <button class="action-btn buy-btn" type="button" data-buy>BUY</button>
-          <a class="action-btn secondary commission-btn" id="commissionLink" href="commission.html">COMMISSION</a>
+          <button class="action-btn secondary commission-btn" id="commissionLink" type="button" data-open-commission>COMMISSION</button>
         </div>
       </div>
     </section>
@@ -92,6 +92,111 @@
     </div>
   </aside>
   <div class="inbox-overlay" data-inbox-close></div>
+
+  <div class="modal" id="purchaseModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="purchaseTitle">
+      <button class="modal-close" type="button" data-purchase-close aria-label="Close">&times;</button>
+      <h2 id="purchaseTitle">Complete Purchase</h2>
+      <p class="modal-subtitle">Provide payment method and delivery details.</p>
+      <form id="purchaseForm" class="purchase-form">
+        <label class="field">
+          Item
+          <input id="purchaseItemName" type="text" readonly />
+        </label>
+        <label class="field">
+          Artist
+          <input id="purchaseArtist" type="text" readonly />
+        </label>
+        <label class="field">
+          Payment Method
+          <select id="paymentMethod" required>
+            <option value="">Select method</option>
+            <option value="E-Wallet">E-Wallet</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+          </select>
+        </label>
+        <label class="field">
+          Delivery Address
+          <textarea id="deliveryAddress" rows="3" placeholder="Enter full delivery address" required></textarea>
+        </label>
+        <label class="field">
+          Message to Artist
+          <textarea id="purchaseMessage" rows="3" placeholder="Add special requests or notes"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" data-purchase-close>Cancel</button>
+          <button type="submit" class="primary-btn">Confirm Purchase</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="quickCommissionModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="quickCommissionTitle">
+      <button class="modal-close" type="button" data-commission-close aria-label="Close">&times;</button>
+      <h2 id="quickCommissionTitle">Request Commission</h2>
+      <p class="modal-subtitle">Send a direct custom request for this item.</p>
+      <form id="quickCommissionForm" class="purchase-form">
+        <label class="field">
+          Item Type
+          <input id="quickCommissionItem" type="text" readonly />
+        </label>
+        <label class="field">
+          Artist
+          <input id="quickCommissionArtist" type="text" readonly />
+        </label>
+        <label class="field">
+          Budget
+          <select id="quickCommissionBudget" required>
+            <option value="">Select budget</option>
+            <option value="₱200-₱500">₱200-₱500</option>
+            <option value="₱500-₱1000">₱500-₱1000</option>
+            <option value="₱1000+">₱1000+</option>
+          </select>
+        </label>
+        <label class="field">
+          Message Box
+          <textarea id="quickCommissionMessage" rows="4" placeholder="Describe your custom request" required></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" data-commission-close>Cancel</button>
+          <button type="submit" class="primary-btn">Send Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="inboxItemModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="inboxItemTitle">
+      <button class="modal-close" type="button" data-item-close aria-label="Close">&times;</button>
+      <h2 id="inboxItemTitle">Item Information</h2>
+      <div class="inbox-item-modal" id="inboxItemDetails"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="social-icons">
+          <a href="https://www.instagram.com/9lw1n4/"><img src="../assets/images/ui/instagram-white-icon.webp" alt="Instagram"></a>
+          <a href="https://www.facebook.com/alwina.lapuz.5/"><img src="../assets/images/ui/facebook.webp" alt="Facebook"></a>
+          <a href="#"><img src="../assets/images/ui/x-social-media-white-round-icon.png" alt="Twitter"></a>
+        </div>
+
+        <div class="footer-links">
+          <a href="../index.html">About Likha</a>
+          <span>|</span>
+          <a href="#">Contact Us</a>
+          <span>|</span>
+          <a href="#">Follow Us</a>
+        </div>
+      </div>
+
+      <div class="footer-right">
+        &copy; 2026 Likha. All rights reserved.
+      </div>
+    </div>
+  </footer>
 
   <script src="../assets/js/store.js"></script>
   <script src="../assets/js/activity.js"></script>

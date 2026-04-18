@@ -8,8 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!artist) return;
 
   const STORAGE_KEY = "likhaCommissionRequests";
+  const PURCHASE_KEY = "likhaPurchaseRequests";
   const store = window.LikhaStore;
   const loadRequests = () => store?.get(STORAGE_KEY) || [];
+  const loadPurchases = () => store?.get(PURCHASE_KEY) || [];
 
   const saveRequests = (requests) => {
     store?.set(STORAGE_KEY, requests);
@@ -72,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const inbox = document.getElementById("commissionInbox");
+  const purchaseInbox = document.getElementById("purchaseInbox");
   const commissionModal = document.getElementById("commissionModal");
   const confirmModal = document.getElementById("confirmModal");
   const confirmMessage = document.getElementById("confirmMessage");
@@ -147,7 +150,58 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  const renderPurchaseInbox = () => {
+    if (!purchaseInbox) return;
+    const purchases = loadPurchases()
+      .filter((req) => req.artistId === artist.id)
+      .sort((a, b) => b.createdAt - a.createdAt);
+
+    if (!purchases.length) {
+      purchaseInbox.innerHTML =
+        '<div class="inbox-empty">No purchase orders yet.</div>';
+      return;
+    }
+
+    purchaseInbox.innerHTML = "";
+    purchases.forEach((order) => {
+      const card = document.createElement("div");
+      card.className = "inbox-card";
+      card.innerHTML = `
+        <img class="inbox-thumb" src="${resolvePath(
+          order.itemImage || artist.avatar
+        )}" alt="${order.itemTitle || "Purchased item"}" />
+        <div class="inbox-info">
+          <strong>${order.itemTitle || "Purchased item"}</strong>
+          <span>Buyer: ${order.buyerName || "Likha User"}</span>
+          <div class="inbox-meta">
+            <span>Price: ${order.itemPrice || "N/A"}</span>
+            <span>Payment: ${order.paymentMethod || "N/A"}</span>
+            <span>Status: ${order.status || "Pending"}</span>
+          </div>
+          ${
+            order.buyerEmail
+              ? `<span><strong>Email:</strong> ${order.buyerEmail}</span>`
+              : ""
+          }
+          ${
+            order.buyerTel
+              ? `<span><strong>Phone:</strong> ${order.buyerTel}</span>`
+              : ""
+          }
+          <span><strong>Address:</strong> ${order.deliveryAddress || "-"}</span>
+          ${
+            order.messageToArtist
+              ? `<span><strong>Message:</strong> ${order.messageToArtist}</span>`
+              : ""
+          }
+        </div>
+      `;
+      purchaseInbox.appendChild(card);
+    });
+  };
+
   renderInbox();
+  renderPurchaseInbox();
 
   const form = document.getElementById("commissionForm");
   const submitButton = form?.querySelector(".primary-btn");
