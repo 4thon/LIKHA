@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const auth = window.LikhaAuth;
   const isLoggedIn = () => Boolean(auth?.isLoggedIn?.());
   const inPages = window.location.pathname.toLowerCase().includes("/pages/");
+  const authPage = /\/(login|sign-up)\.html$/i.test(window.location.pathname);
   const loginPath = inPages ? "login.html" : "pages/login.html";
   const landingPath = inPages ? "../index.html" : "index.html";
 
@@ -88,8 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isLoggedIn()) {
     document.body.classList.add("logged-in");
-    document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
-    document.querySelectorAll(".nav .dashboard-link").forEach((link) => link.remove());
+    if (!authPage) {
+      document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
+      document.querySelectorAll(".nav .dashboard-link").forEach((link) => link.remove());
+    }
   }
 
   document.addEventListener(
