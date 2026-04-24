@@ -81,9 +81,9 @@ body.locked .liked-sections {
 }
 
 .liked-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  column-count: 4;
+  column-gap: 14px;
+  display: block;
 }
 
 .liked-card {
@@ -93,6 +93,10 @@ body.locked .liked-sections {
   overflow: hidden;
   box-shadow: var(--shadow);
   cursor: pointer;
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 14px;
+  break-inside: avoid;
 }
 
 .liked-card img {
@@ -173,6 +177,12 @@ body.locked .liked-sections {
 
 @media (max-width: 768px) {
   .liked-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    column-count: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .liked-grid {
+    column-count: 1;
   }
 }

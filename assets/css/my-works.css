@@ -16,6 +16,7 @@
   overflow: hidden;
   box-shadow: var(--work-shadow);
   background: #f2ecec;
+  cursor: pointer;
 }
 
 .work-card img {
@@ -198,6 +199,51 @@
   padding: 10px 26px;
 }
 
+.work-info-modal {
+  width: min(700px, 95vw);
+}
+
+.work-info-modal h2 {
+  margin: 0 0 16px;
+  color: var(--accent);
+}
+
+.work-info-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+#workInfoImage {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: var(--work-shadow);
+  display: block;
+}
+
+.work-info-copy {
+  display: grid;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.work-info-line {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.work-info-line strong {
+  color: var(--text);
+}
+
+.work-info-copy p {
+  margin: 8px 0 0;
+  line-height: 1.7;
+}
+
 @media (max-width: 900px) {
   .work-form-layout {
     grid-template-columns: 1fr;
@@ -205,6 +251,10 @@
 
   .main-upload {
     min-height: 220px;
+  }
+
+  .work-info-layout {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -84,6 +84,16 @@
           </span>
           My Works
         </a>
+        <a class="side-btn" href="storage-room.html">
+          <span class="side-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2" />
+              <path d="M4 10h16" />
+              <path d="M10 4v16" />
+            </svg>
+          </span>
+          Storage Room
+        </a>
         <button class="side-btn" type="button" data-logout>
           <span class="side-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -104,11 +114,16 @@
 
         <div class="profile-layout">
           <section class="profile-card">
-            <img
-              class="profile-avatar"
-              src="../assets/images/accessories/a.12.jpg"
-              alt="Artist profile"
-            />
+            <div class="profile-avatar-wrap">
+              <img
+                class="profile-avatar"
+                id="profileAvatarImage"
+                src="../assets/images/accessories/a.12.jpg"
+                alt="Artist profile"
+              />
+              <button class="avatar-edit-btn" type="button" id="editProfileAvatar">Edit photo</button>
+              <input type="file" id="profileAvatarInput" accept="image/*" hidden />
+            </div>
             <div class="profile-handle" id="profileHandle">@Winawinawins</div>
             <div class="profile-email" id="profileEmail">user@gmail.com</div>
 
@@ -188,6 +203,7 @@
   </div>
 
   <script src="../assets/js/store.js"></script>
+  <script src="../assets/js/popup.js"></script>
   <script src="../assets/js/activity.js"></script>
   <script src="../assets/js/notifications.js"></script>
   <script src="../assets/js/script.js"></script>

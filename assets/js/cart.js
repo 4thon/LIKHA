@@ -2,6 +2,8 @@
   const store = window.LikhaStore;
   if (!store) return;
 
+  const popup = window.LikhaPopup;
+
   const CART_KEY = "likhaCartItems";
   const PURCHASE_KEY = "likhaPurchasedItems";
   const PURCHASE_REQUEST_KEY = "likhaPurchaseRequests";
@@ -16,8 +18,15 @@
     return inPages ? `../${cleaned}` : cleaned;
   };
 
-  const getList = (key) => store.get(key) || [];
-  const saveList = (key, list) => store.set(key, list);
+  const getList = (key) => {
+    const list = store.get(key);
+    return Array.isArray(list) ? list : [];
+  };
+
+  const saveList = (key, list) => {
+    store.set(key, Array.isArray(list) ? list : []);
+  };
+
   const getId = (item) => item.id || item.image || item.title;
   const getProfile = () => store.get(PROFILE_KEY) || {};
 
@@ -52,17 +61,50 @@
     return fullName || "Likha User";
   };
 
-  const addUnique = (list, item) => {
+  const normalizeQuantity = (value) => {
+    const parsed = Number.parseInt(value, 10);
+    if (!Number.isFinite(parsed) || parsed < 1) return 1;
+    return parsed;
+  };
+
+  const addOrIncrement = (list, item, quantity = 1) => {
     const id = getId(item);
     if (!id) return list;
-    if (list.some((entry) => getId(entry) === id)) return list;
-    return [...list, { ...item, id }];
+    const existingIndex = list.findIndex((entry) => getId(entry) === id);
+    if (existingIndex >= 0) {
+      const current = list[existingIndex];
+      const nextQuantity =
+        normalizeQuantity(current.quantity || 1) + normalizeQuantity(quantity);
+      const next = {
+        ...current,
+        ...item,
+        quantity: nextQuantity,
+      };
+      list[existingIndex] = next;
+      return list;
+    }
+    return [
+      ...list,
+      {
+        ...item,
+        id,
+        quantity: normalizeQuantity(quantity),
+      },
+    ];
   };
 
   const removeFromList = (key, item) => {
     const id = getId(item);
     const list = getList(key).filter((entry) => getId(entry) !== id);
     saveList(key, list);
+  };
+
+  const updateListItem = (key, itemId, patch) => {
+    const list = getList(key).map((entry) =>
+      getId(entry) === itemId ? { ...entry, ...patch } : entry
+    );
+    saveList(key, list);
+    return list.find((entry) => getId(entry) === itemId) || null;
   };
 
   const findArtistForItem = (item) => {
@@ -102,13 +144,16 @@
 
   const itemModal = document.getElementById("inboxItemModal");
   const itemModalDetails = document.getElementById("inboxItemDetails");
+  const itemModalActions = document.getElementById("inboxItemActions");
   const purchaseModal = document.getElementById("purchaseModal");
   const purchaseForm = document.getElementById("purchaseForm");
   const commissionModal = document.getElementById("quickCommissionModal");
   const commissionForm = document.getElementById("quickCommissionForm");
+  const walletFields = document.getElementById("walletFields");
 
   const openItemModal = (item, source = "Cart") => {
     if (!itemModal || !itemModalDetails) return;
+    const quantity = normalizeQuantity(item.quantity || 1);
     itemModalDetails.innerHTML = `
       <img src="${resolveImage(item.image)}" alt="${item.title || "Item"}" />
       <div class="inbox-item-copy">
@@ -116,10 +161,26 @@
         <div><strong>Artist:</strong> ${item.maker || item.artistName || "Likha Artist"}</div>
         <div><strong>Price:</strong> ${item.price || "N/A"}</div>
         <div><strong>Category:</strong> ${item.category || "Handmade"}</div>
+        <div><strong>Quantity:</strong> ${quantity}</div>
         <div><strong>Source:</strong> ${source}</div>
         ${
           item.paymentMethod
             ? `<div><strong>Payment:</strong> ${item.paymentMethod}</div>`
+            : ""
+        }
+        ${
+          item.walletProvider
+            ? `<div><strong>Wallet:</strong> ${item.walletProvider}</div>`
+            : ""
+        }
+        ${
+          item.walletNumber
+            ? `<div><strong>Wallet Number:</strong> ${item.walletNumber}</div>`
+            : ""
+        }
+        ${
+          item.walletReference
+            ? `<div><strong>Reference #:</strong> ${item.walletReference}</div>`
             : ""
         }
         ${
@@ -134,6 +195,108 @@
         }
       </div>
     `;
+
+    if (itemModalActions) {
+      const isPurchase = source.toLowerCase().includes("purchase");
+      itemModalActions.innerHTML = `
+        <label class="field item-quantity-field">
+          Quantity
+          <input type="number" min="1" value="${quantity}" id="modalItemQuantity" />
+        </label>
+        <label class="field item-reason-field">
+          ${
+            isPurchase
+              ? "Cancel reason"
+              : "Remove reason"
+          }
+          <textarea id="modalItemReason" rows="3" placeholder="${
+            isPurchase ? "Why do you want to cancel this order?" : "Why do you want to remove this cart item?"
+          }"></textarea>
+        </label>
+        <div class="modal-actions item-modal-buttons">
+          <button type="button" class="ghost-btn" data-item-qty-save>Save Quantity</button>
+          <button type="button" class="ghost-btn" data-item-remove>${
+            isPurchase ? "Cancel Order" : "Remove Item"
+          }</button>
+        </div>
+      `;
+
+      const quantityInput = itemModalActions.querySelector("#modalItemQuantity");
+      const reasonInput = itemModalActions.querySelector("#modalItemReason");
+      const saveBtn = itemModalActions.querySelector("[data-item-qty-save]");
+      const removeBtn = itemModalActions.querySelector("[data-item-remove]");
+      const sourceKey = isPurchase ? PURCHASE_KEY : CART_KEY;
+
+      saveBtn?.addEventListener("click", () => {
+        const nextQuantity = normalizeQuantity(quantityInput?.value);
+        updateListItem(sourceKey, item.id, { quantity: nextQuantity });
+        renderPanel();
+        window.LikhaActivity?.log({
+          type: isPurchase ? "purchase-quantity" : "cart-quantity",
+          message: `Updated quantity for ${item.title || "item"} to ${nextQuantity}`,
+          item: { ...item, quantity: nextQuantity },
+        });
+        popup?.success("Quantity updated successfully.", {
+          title: "Updated",
+          autoClose: 1200,
+        });
+        closeModal(itemModal);
+      });
+
+      removeBtn?.addEventListener("click", () => {
+        const reason = reasonInput?.value.trim();
+        if (!reason) {
+          popup?.error(
+            isPurchase
+              ? "Please enter a reason before canceling this order."
+              : "Please enter a reason before removing this cart item.",
+            {
+              title: "Validation needed",
+            }
+          );
+          return;
+        }
+
+        popup?.confirm(
+          isPurchase
+            ? "Cancel this purchased item?"
+            : "Remove this item from your cart?",
+          () => {
+            if (isPurchase) {
+              removeFromList(PURCHASE_KEY, item);
+            } else {
+              removeFromList(CART_KEY, item);
+            }
+            renderPanel();
+            if (window.LikhaActivity) {
+              window.LikhaActivity.log({
+                type: isPurchase ? "purchase-cancel" : "cart-remove",
+                message: isPurchase
+                  ? `Canceled ${item.title || "purchased item"}`
+                  : `Removed ${item.title || "cart item"} from cart`,
+                item,
+              });
+            }
+            popup?.success(
+              isPurchase
+                ? "Order canceled successfully."
+                : "Cart item removed successfully.",
+              {
+                title: "Done",
+                autoClose: 1200,
+              }
+            );
+            closeModal(itemModal);
+          },
+          {
+            title: isPurchase ? "Cancel order" : "Remove cart item",
+            confirmText: "Yes",
+            cancelText: "No",
+          }
+        );
+      });
+    }
+
     openModal(itemModal);
   };
 
@@ -150,11 +313,14 @@
     items.forEach((item) => {
       const row = document.createElement("div");
       row.className = "inbox-item";
+      row.dataset.source = sourceLabel;
+      row.dataset.itemId = getId(item);
       row.innerHTML = `
         <img src="${resolveImage(item.image)}" alt="${item.title || "Item"}" />
         <div class="inbox-info">
           <div class="inbox-title">${item.title || "Handmade Item"}</div>
           <div class="inbox-meta">${item.maker ? `By ${item.maker}` : ""}</div>
+          <div class="inbox-meta">Qty: ${normalizeQuantity(item.quantity || 1)}</div>
         </div>
         <div class="inbox-price">${item.price || ""}</div>
       `;
@@ -165,9 +331,12 @@
     });
   };
 
+  const totalQuantity = (items) =>
+    items.reduce((sum, item) => sum + normalizeQuantity(item.quantity || 1), 0);
+
   const updateBadges = () => {
-    const cartCount = getList(CART_KEY).length;
-    const purchaseCount = getList(PURCHASE_KEY).length;
+    const cartCount = totalQuantity(getList(CART_KEY));
+    const purchaseCount = totalQuantity(getList(PURCHASE_KEY));
     document.querySelectorAll("[data-cart-count]").forEach((el) => {
       el.textContent = cartCount;
     });
@@ -216,14 +385,18 @@
 
   const addToCart = (item) => {
     const current = getList(CART_KEY);
-    const updated = addUnique(current, item);
+    const updated = addOrIncrement([...current], item, 1);
     saveList(CART_KEY, updated);
     renderPanel();
-    if (updated.length !== current.length && window.LikhaActivity) {
-      window.LikhaActivity.log({
+    if (updated.length !== current.length || totalQuantity(updated) > totalQuantity(current)) {
+      window.LikhaActivity?.log({
         type: "cart",
         message: `Added to cart: ${item.title || "Handmade item"}`,
-        item,
+        item: { ...item, quantity: 1 },
+      });
+      popup?.success("Item added to cart.", {
+        title: "Added",
+        autoClose: 1200,
       });
     }
   };
@@ -243,13 +416,17 @@
       itemTitle: item.title,
       itemImage: item.image,
       itemPrice: item.price,
+      quantity: details.quantity,
       paymentMethod: details.paymentMethod,
+      walletProvider: details.walletProvider || "",
+      walletNumber: details.walletNumber || "",
+      walletReference: details.walletReference || "",
       deliveryAddress: details.deliveryAddress,
       messageToArtist: details.messageToArtist,
       status: "Pending",
       createdAt: Date.now(),
     };
-    requests.push(request);
+    requests.unshift(request);
     saveList(PURCHASE_REQUEST_KEY, requests);
   };
 
@@ -257,25 +434,28 @@
     const current = getList(PURCHASE_KEY);
     const enrichedItem = {
       ...item,
+      quantity: normalizeQuantity(details.quantity || 1),
       paymentMethod: details.paymentMethod,
+      walletProvider: details.walletProvider || "",
+      walletNumber: details.walletNumber || "",
+      walletReference: details.walletReference || "",
       deliveryAddress: details.deliveryAddress,
       messageToArtist: details.messageToArtist,
       purchasedAt: Date.now(),
     };
-    const updated = addUnique(current, enrichedItem);
+    const updated = addOrIncrement([...current], enrichedItem, enrichedItem.quantity);
     saveList(PURCHASE_KEY, updated);
     addPurchaseRequestForArtist(item, details);
-    removeFromList(CART_KEY, item);
     renderPanel();
-    if (updated.length !== current.length && window.LikhaActivity) {
-      window.LikhaActivity.log({
-        type: "purchase",
-        message: `Purchased ${item.title || "handmade item"} via ${
-          details.paymentMethod
-        }`,
-        item: enrichedItem,
-      });
-    }
+    window.LikhaActivity?.log({
+      type: "purchase",
+      message: `Purchased ${item.title || "handmade item"} via ${details.paymentMethod}`,
+      item: enrichedItem,
+    });
+    popup?.success("Your order has been submitted successfully.", {
+      title: "Order sent",
+      autoClose: 1400,
+    });
   };
 
   const sendCommissionRequest = (item, formData) => {
@@ -299,19 +479,17 @@
       createdAt: Date.now(),
       source: "Item page quick commission",
     };
-    requests.push(request);
+    requests.unshift(request);
     saveList(COMMISSION_KEY, requests);
-    if (window.LikhaActivity) {
-      window.LikhaActivity.log({
-        type: "commission",
-        message: `Sent commission request to ${request.artistName}`,
-        item: {
-          title: item.title,
-          maker: request.artistName,
-          category: item.category,
-        },
-      });
-    }
+    window.LikhaActivity?.log({
+      type: "commission",
+      message: `Sent commission request to ${request.artistName}`,
+      item: {
+        title: item.title,
+        maker: request.artistName,
+        category: item.category,
+      },
+    });
   };
 
   const getActiveItem = () => window.LIKHA_ACTIVE_ITEM || null;
@@ -373,17 +551,27 @@
       if (!item || !purchaseModal) return;
       const itemNameInput = document.getElementById("purchaseItemName");
       const artistInput = document.getElementById("purchaseArtist");
-      if (itemNameInput) itemNameInput.value = item.title || "Handmade Item";
-      if (artistInput) {
-        const artist = findArtistForItem(item);
-        artistInput.value = artist?.name || item.artistName || item.maker || "";
-      }
+      const quantityInput = document.getElementById("purchaseQuantity");
+      const paymentMethod = document.getElementById("paymentMethod");
+      const walletProvider = document.getElementById("walletProvider");
+      const walletNumber = document.getElementById("walletNumber");
+      const walletReference = document.getElementById("walletReference");
+      const deliveryAddress = document.getElementById("deliveryAddress");
+      const purchaseMessage = document.getElementById("purchaseMessage");
       if (purchaseForm) purchaseForm.reset();
       if (itemNameInput) itemNameInput.value = item.title || "Handmade Item";
       if (artistInput) {
         const artist = findArtistForItem(item);
         artistInput.value = artist?.name || item.artistName || item.maker || "";
       }
+      if (quantityInput) quantityInput.value = "1";
+      if (paymentMethod) paymentMethod.value = "";
+      if (walletProvider) walletProvider.value = "";
+      if (walletNumber) walletNumber.value = "";
+      if (walletReference) walletReference.value = "";
+      if (deliveryAddress) deliveryAddress.value = "";
+      if (purchaseMessage) purchaseMessage.value = "";
+      if (walletFields) walletFields.hidden = true;
       openModal(purchaseModal);
       return;
     }
@@ -395,38 +583,77 @@
       if (!item || !commissionModal) return;
       const artistInput = document.getElementById("quickCommissionArtist");
       const itemInput = document.getElementById("quickCommissionItem");
-      if (artistInput) {
-        const artist = findArtistForItem(item);
-        artistInput.value = artist?.name || item.artistName || item.maker || "";
-      }
-      if (itemInput) itemInput.value = item.title || "Handmade Item";
+      const budget = document.getElementById("quickCommissionBudget");
+      const message = document.getElementById("quickCommissionMessage");
       if (commissionForm) commissionForm.reset();
       if (artistInput) {
         const artist = findArtistForItem(item);
         artistInput.value = artist?.name || item.artistName || item.maker || "";
       }
       if (itemInput) itemInput.value = item.title || "Handmade Item";
+      if (budget) budget.value = "";
+      if (message) message.value = "";
       openModal(commissionModal);
     }
   });
+
+  const paymentMethod = document.getElementById("paymentMethod");
+  if (paymentMethod && walletFields) {
+    paymentMethod.addEventListener("change", () => {
+      walletFields.hidden = paymentMethod.value !== "E-Wallet";
+    });
+  }
 
   if (purchaseForm) {
     purchaseForm.addEventListener("submit", (event) => {
       event.preventDefault();
       const item = getActiveItem();
       if (!item) return;
-      const paymentMethod =
+      const quantity = normalizeQuantity(
+        document.getElementById("purchaseQuantity")?.value || 1
+      );
+      const paymentMethodValue =
         document.getElementById("paymentMethod")?.value.trim() || "";
       const deliveryAddress =
         document.getElementById("deliveryAddress")?.value.trim() || "";
       const messageToArtist =
         document.getElementById("purchaseMessage")?.value.trim() || "";
-      if (!paymentMethod || !deliveryAddress) {
-        alert("Please provide payment method and delivery address.");
+      const walletProviderValue =
+        document.getElementById("walletProvider")?.value.trim() || "";
+      const walletNumberValue =
+        document.getElementById("walletNumber")?.value.trim() || "";
+      const walletReferenceValue =
+        document.getElementById("walletReference")?.value.trim() || "";
+
+      if (!paymentMethodValue || !deliveryAddress) {
+        popup?.error("Please provide a payment method and delivery address.", {
+          title: "Purchase validation",
+        });
         return;
       }
+
+      if (paymentMethodValue === "E-Wallet") {
+        if (!walletProviderValue || !walletNumberValue || !walletReferenceValue) {
+          popup?.error(
+            "Please complete the e-wallet provider, number, and reference number.",
+            { title: "E-Wallet validation" }
+          );
+          return;
+        }
+        if (!/^\d+$/.test(walletNumberValue)) {
+          popup?.error("The e-wallet number should contain digits only.", {
+            title: "E-Wallet validation",
+          });
+          return;
+        }
+      }
+
       purchaseItem(item, {
-        paymentMethod,
+        quantity,
+        paymentMethod: paymentMethodValue,
+        walletProvider: walletProviderValue,
+        walletNumber: walletNumberValue,
+        walletReference: walletReferenceValue,
         deliveryAddress,
         messageToArtist,
       });
@@ -445,12 +672,17 @@
       const message =
         document.getElementById("quickCommissionMessage")?.value.trim() || "";
       if (!budget || !message) {
-        alert("Please provide budget and commission message.");
+        popup?.error("Please provide your budget and commission message.", {
+          title: "Commission validation",
+        });
         return;
       }
       sendCommissionRequest(item, { budget, message });
       closeModal(commissionModal);
-      alert("Commission request sent.");
+      popup?.success("Commission request sent successfully.", {
+        title: "Request sent",
+        autoClose: 1400,
+      });
     });
   }
 

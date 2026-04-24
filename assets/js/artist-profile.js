@@ -173,15 +173,31 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="inbox-info">
           <strong>${order.itemTitle || "Purchased item"}</strong>
           <span>Buyer: ${order.buyerName || "Likha User"}</span>
-          <div class="inbox-meta">
-            <span>Price: ${order.itemPrice || "N/A"}</span>
-            <span>Payment: ${order.paymentMethod || "N/A"}</span>
-            <span>Status: ${order.status || "Pending"}</span>
-          </div>
-          ${
-            order.buyerEmail
-              ? `<span><strong>Email:</strong> ${order.buyerEmail}</span>`
-              : ""
+        <div class="inbox-meta">
+          <span>Price: ${order.itemPrice || "N/A"}</span>
+          <span>Qty: ${order.quantity || 1}</span>
+          <span>Payment: ${order.paymentMethod || "N/A"}</span>
+          <span>Status: ${order.status || "Pending"}</span>
+        </div>
+        ${
+          order.walletProvider
+            ? `<span><strong>Wallet:</strong> ${order.walletProvider}</span>`
+            : ""
+        }
+        ${
+          order.walletNumber
+            ? `<span><strong>Wallet Number:</strong> ${order.walletNumber}</span>`
+            : ""
+        }
+        ${
+          order.walletReference
+            ? `<span><strong>Reference #:</strong> ${order.walletReference}</span>`
+            : ""
+        }
+        ${
+          order.buyerEmail
+            ? `<span><strong>Email:</strong> ${order.buyerEmail}</span>`
+            : ""
           }
           ${
             order.buyerTel

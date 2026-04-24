@@ -1,11 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const isLoggedIn = () => {
-    const sessionFlag = sessionStorage.getItem("likhaLoggedIn") === "true";
-    const nameFlag =
-      typeof window.name === "string" &&
-      window.name.indexOf("likhaLoggedIn=true") !== -1;
-    return sessionFlag || nameFlag;
-  };
+  const auth = window.LikhaAuth;
+  const isLoggedIn = () => Boolean(auth?.isLoggedIn?.());
   const inPages = window.location.pathname.toLowerCase().includes("/pages/");
   const loginPath = inPages ? "login.html" : "pages/login.html";
   const landingPath = inPages ? "../index.html" : "index.html";
@@ -93,31 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isLoggedIn()) {
     document.body.classList.add("logged-in");
-    document.querySelectorAll(".nav .login").forEach((link) => link.remove());
-    const pagePath = window.location.pathname.toLowerCase();
-    const dashboardPath = inPages ? "dashboard.html" : "pages/dashboard.html";
-    const shouldShowDashboardLink =
-      pagePath.includes("accessories.html") ||
-      pagePath.includes("jewelry.html") ||
-      pagePath.includes("clothing.html") ||
-      pagePath.includes("home-decor.html") ||
-      pagePath.includes("commission.html") ||
-      pagePath.includes("artist.html") ||
-      pagePath.includes("item.html");
-
-    document.querySelectorAll(".nav").forEach((nav) => {
-      const existing = nav.querySelector(".dashboard-link");
-      if (!shouldShowDashboardLink) {
-        if (existing) existing.remove();
-        return;
-      }
-      if (existing) return;
-      const link = document.createElement("a");
-      link.href = dashboardPath;
-      link.className = "dashboard-link";
-      link.textContent = "Dashboard";
-      nav.appendChild(link);
-    });
+    document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
+    document.querySelectorAll(".nav .dashboard-link").forEach((link) => link.remove());
   }
 
   document.addEventListener(
@@ -164,10 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const performLogout = () => {
-    sessionStorage.removeItem("likhaLoggedIn");
-    if (typeof window.name === "string") {
-      window.name = window.name.replace("likhaLoggedIn=true", "").trim();
-    }
+    auth?.clearSession?.();
     window.location.href = landingPath;
   };
 

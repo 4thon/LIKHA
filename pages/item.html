@@ -108,6 +108,10 @@
           <input id="purchaseArtist" type="text" readonly />
         </label>
         <label class="field">
+          Quantity
+          <input id="purchaseQuantity" type="number" min="1" value="1" required />
+        </label>
+        <label class="field">
           Payment Method
           <select id="paymentMethod" required>
             <option value="">Select method</option>
@@ -115,6 +119,25 @@
             <option value="Cash on Delivery">Cash on Delivery</option>
           </select>
         </label>
+        <div class="wallet-fields" id="walletFields" hidden>
+          <label class="field">
+            E-Wallet Provider
+            <select id="walletProvider">
+              <option value="">Select provider</option>
+              <option value="GCash">GCash</option>
+              <option value="Maya">Maya</option>
+              <option value="GrabPay">GrabPay</option>
+            </select>
+          </label>
+          <label class="field">
+            E-Wallet Number
+            <input id="walletNumber" type="text" inputmode="numeric" placeholder="Enter wallet number" />
+          </label>
+          <label class="field">
+            Reference Number
+            <input id="walletReference" type="text" placeholder="Enter reference number" />
+          </label>
+        </div>
         <label class="field">
           Delivery Address
           <textarea id="deliveryAddress" rows="3" placeholder="Enter full delivery address" required></textarea>
@@ -171,6 +194,7 @@
       <button class="modal-close" type="button" data-item-close aria-label="Close">&times;</button>
       <h2 id="inboxItemTitle">Item Information</h2>
       <div class="inbox-item-modal" id="inboxItemDetails"></div>
+      <div class="item-modal-actions" id="inboxItemActions"></div>
     </div>
   </div>
 
@@ -199,6 +223,7 @@
   </footer>
 
   <script src="../assets/js/store.js"></script>
+  <script src="../assets/js/popup.js"></script>
   <script src="../assets/js/activity.js"></script>
   <script src="../assets/js/artists-data.js"></script>
   <script src="../assets/js/item-detail.js"></script>

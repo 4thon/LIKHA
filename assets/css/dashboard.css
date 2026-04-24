@@ -36,6 +36,13 @@ a {
   padding: 0;
 }
 
+body.locked .dashboard .sidebar,
+body.locked .dashboard .content > :not(.lock-banner) {
+  filter: blur(3px);
+  pointer-events: none;
+  user-select: none;
+}
+
 .topbar {
   display: flex;
   align-items: center;

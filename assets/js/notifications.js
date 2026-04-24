@@ -67,6 +67,22 @@
         <div><strong>Artist:</strong> ${maker}</div>
         <div><strong>Category:</strong> ${item.category || "Handmade"}</div>
         <div><strong>Price:</strong> ${item.price || "N/A"}</div>
+        ${item.quantity ? `<div><strong>Quantity:</strong> ${item.quantity}</div>` : ""}
+        ${
+          item.paymentMethod
+            ? `<div><strong>Payment:</strong> ${item.paymentMethod}</div>`
+            : ""
+        }
+        ${
+          item.walletProvider
+            ? `<div><strong>Wallet:</strong> ${item.walletProvider}</div>`
+            : ""
+        }
+        ${
+          item.deliveryAddress
+            ? `<div><strong>Delivery:</strong> ${item.deliveryAddress}</div>`
+            : ""
+        }
       </div>
     `;
 

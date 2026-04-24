@@ -118,7 +118,12 @@ if (form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = form.elements["name"].value || "Guest";
-    alert(`Thanks, ${name}! We'll get back to you soon.`);
+    if (window.LikhaPopup) {
+      window.LikhaPopup.success(`Thanks, ${name}! We'll get back to you soon.`, {
+        title: "Message sent",
+        autoClose: 1400,
+      });
+    }
     form.reset();
   });
 }

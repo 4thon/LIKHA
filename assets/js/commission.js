@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   const categorySelect = document.getElementById("commissionCategory");
-  const pickerGrid = document.getElementById("itemPickerGrid");
   const preview = document.getElementById("commissionPreview");
   const referenceInput = document.getElementById("referenceImage");
-  if (!categorySelect || !pickerGrid || !preview) return;
+  const referenceFileInput = document.getElementById("referenceImageInput");
+  if (!categorySelect || !preview) return;
 
   const basePath = "../assets/images";
   const categories = {
@@ -41,39 +41,44 @@ document.addEventListener("DOMContentLoaded", () => {
     ],
   };
 
-  const closePicker = () => {
-    const modal = document.getElementById("itemPickerModal");
-    if (!modal) return;
-    modal.classList.remove("active");
-    modal.setAttribute("aria-hidden", "true");
+  const setPreview = (src, label = "Reference image") => {
+    preview.src = src;
+    preview.alt = label;
+    if (referenceInput) referenceInput.value = src;
   };
 
-  const buildGrid = (category) => {
-    pickerGrid.innerHTML = "";
+  const buildDefaultPreview = (category) => {
     const items = categories[category] || [];
-    items.forEach((item, index) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "picker-item";
-      button.innerHTML = `<img src="${item.src}" alt="${item.label}" />`;
-      button.addEventListener("click", () => {
-        preview.src = item.src;
-        preview.alt = item.label;
-        if (referenceInput) referenceInput.value = item.src;
-        closePicker();
-      });
-      pickerGrid.appendChild(button);
-      if (index === 0) {
-        preview.src = item.src;
-        preview.alt = item.label;
-        if (referenceInput) referenceInput.value = item.src;
-      }
-    });
+    if (!items.length) return;
+    setPreview(items[0].src, items[0].label);
   };
 
-  buildGrid(categorySelect.value);
+  buildDefaultPreview(categorySelect.value);
 
   categorySelect.addEventListener("change", () => {
-    buildGrid(categorySelect.value);
+    buildDefaultPreview(categorySelect.value);
+    if (referenceFileInput) {
+      referenceFileInput.value = "";
+    }
   });
+
+  if (referenceFileInput) {
+    referenceFileInput.addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        if (window.LikhaPopup) {
+          window.LikhaPopup.error("Please upload a valid image file.", {
+            title: "Invalid image",
+          });
+        }
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreview(reader.result, file.name);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 });

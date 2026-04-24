@@ -1,14 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const store = window.LikhaStore;
+  const auth = window.LikhaAuth;
+  const popup = window.LikhaPopup;
+  const currentAccount = auth?.getCurrentUser?.();
   const needsProfile =
     sessionStorage.getItem("likhaNeedsProfile") === "true" ||
-    (store && !store.get("likhaProfileComplete"));
+    Boolean(store && !store.get("likhaProfileComplete"));
 
   const content = document.querySelector(".content");
   const settingsCard = document.querySelector(".settings-card");
 
   const headerTitle = document.getElementById("profileHeaderTitle");
   const headerSubtitle = document.getElementById("profileHeaderSubtitle");
+  const avatarImage = document.getElementById("profileAvatarImage");
+  const avatarInput = document.getElementById("profileAvatarInput");
+  const editAvatarBtn = document.getElementById("editProfileAvatar");
 
   const inputMap = {
     firstName: document.getElementById("profileFirstName"),
@@ -31,7 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
     bio: document.getElementById("profileBio"),
   };
 
-  const loadProfile = () => store?.get("likhaProfileData") || {};
+  const defaultAvatar = "../assets/images/accessories/a.12.jpg";
+
+  const loadProfile = () => {
+    const profile = store?.get("likhaProfileData") || {};
+    const accountProfile = currentAccount?.profile || {};
+    return {
+      ...accountProfile,
+      ...profile,
+      avatar: profile.avatar || accountProfile.avatar || currentAccount?.avatar || defaultAvatar,
+      email:
+        profile.email ||
+        accountProfile.email ||
+        currentAccount?.email ||
+        "",
+    };
+  };
 
   const buildHandle = (profile) => {
     if (profile.handle) return profile.handle;
@@ -44,6 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const fullName = [profile.firstName, profile.lastName]
       .filter(Boolean)
       .join(" ");
+    if (avatarImage) {
+      avatarImage.src = profile.avatar || defaultAvatar;
+      avatarImage.alt = profile.firstName || profile.lastName || "Artist profile";
+    }
     if (outputMap.handle) outputMap.handle.textContent = buildHandle(profile);
     if (outputMap.email)
       outputMap.email.textContent = profile.email || "user@email.com";
@@ -66,9 +91,45 @@ document.addEventListener("DOMContentLoaded", () => {
       inputMap.addressConfirm.value = profile.address || "";
   };
 
-  const currentProfile = loadProfile();
+  let currentProfile = loadProfile();
   fillForm(currentProfile);
   renderProfile(currentProfile);
+
+  const setAvatar = (avatar) => {
+    if (!avatar) return;
+    currentProfile = { ...currentProfile, avatar };
+    renderProfile({ ...currentProfile, avatar });
+    auth?.setProfileAvatar?.(avatar);
+    store?.set("likhaProfileData", { ...currentProfile, avatar });
+  };
+
+  if (avatarInput) {
+    avatarInput.addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        popup?.error("Please upload a valid image file for your profile photo.", {
+          title: "Invalid image",
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAvatar(reader.result);
+        popup?.success("Profile picture updated successfully.", {
+          title: "Photo updated",
+          autoClose: 1200,
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (editAvatarBtn && avatarInput) {
+    editAvatarBtn.addEventListener("click", () => {
+      avatarInput.click();
+    });
+  }
 
   if (needsProfile && content) {
     document.body.classList.add("profile-setup");
@@ -99,25 +160,67 @@ document.addEventListener("DOMContentLoaded", () => {
       tel: inputMap.tel?.value.trim() || "",
       address: inputMap.address?.value.trim() || "",
       bio: currentProfile.bio || "Likha creator",
+      avatar: currentProfile.avatar || defaultAvatar,
+      handle: currentProfile.handle || buildHandle(currentProfile),
     };
+    const password = inputMap.password?.value || "";
+    const passwordConfirm = inputMap.passwordConfirm?.value || "";
 
-    if (!profile.firstName || !profile.lastName || !profile.email || !profile.tel) {
-      alert("Please complete your name, email, and phone number.");
+    if (
+      !profile.firstName ||
+      !profile.lastName ||
+      !profile.email ||
+      !profile.tel ||
+      !profile.address
+    ) {
+      popup?.error("Please complete your name, email, phone number, and address.", {
+        title: "Profile validation",
+      });
       return;
+    }
+
+    if (password || passwordConfirm) {
+      if (!password || !passwordConfirm) {
+        popup?.error("Please fill in both password fields if you want to change your password.", {
+          title: "Password validation",
+        });
+        return;
+      }
+      if (password !== passwordConfirm) {
+        popup?.error("Password confirmation does not match.", {
+          title: "Password validation",
+        });
+        return;
+      }
+      const account = auth?.getCurrentUser?.();
+      if (account) {
+        auth?.upsertAccount?.({
+          ...account,
+          password,
+        });
+      }
     }
 
     if (inputMap.addressConfirm?.value.trim() !== profile.address) {
-      alert("Address confirmation does not match.");
+      popup?.error("Address confirmation does not match.", {
+        title: "Profile validation",
+      });
       return;
     }
 
-    if (store) {
-      store.set("likhaProfileData", profile);
-      store.set("likhaProfileComplete", true);
-    } else {
-      localStorage.setItem("likhaProfileData", JSON.stringify(profile));
-      localStorage.setItem("likhaProfileComplete", "true");
-    }
+    const saved = auth?.saveProfile?.(profile) || profile;
+    currentProfile = { ...currentProfile, ...saved };
+    store?.set("likhaProfileData", saved);
+    store?.set("likhaProfileComplete", true);
+    window.LikhaActivity?.log({
+      type: "profile-update",
+      message: `Updated profile for ${saved.firstName || saved.email || "Likha user"}`,
+      item: {
+        title: `${saved.firstName || ""} ${saved.lastName || ""}`.trim() || "Profile update",
+        maker: saved.email || "Likha User",
+        category: "Profile",
+      },
+    });
 
     sessionStorage.removeItem("likhaNeedsProfile");
     document.body.classList.remove("profile-setup");
@@ -128,7 +231,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (headerSubtitle)
       headerSubtitle.textContent = "Keep your artist information up to date.";
 
-    renderProfile(profile);
+    renderProfile(saved);
+    fillForm(saved);
+    popup?.success("Profile information saved successfully.", {
+      title: "Profile saved",
+      autoClose: 1400,
+    });
   };
 
   document.querySelectorAll("[data-save-profile]").forEach((button) => {
