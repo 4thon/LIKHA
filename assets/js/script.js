@@ -140,36 +140,3 @@ const updateTopbar = () => {
 
 updateTopbar();
 window.addEventListener("scroll", updateTopbar, { passive: true });
-
-const DASHBOARD_RETURN_KEY = "likhaShowDashboardBackLink";
-const dashboardNavTriggerSelector =
-  '.dashboard .nav a[href="accessories.html"], .dashboard .nav a[href="jewelry.html"], .dashboard .nav a[href="clothing.html"], .dashboard .nav a[href="home-decor.html"]';
-
-const setDashboardBackLinkFlag = () => {
-  sessionStorage.setItem(DASHBOARD_RETURN_KEY, "true");
-};
-
-const shouldShowDashboardBackLink = () => {
-  if (sessionStorage.getItem(DASHBOARD_RETURN_KEY) !== "true") return false;
-  return Boolean(document.body.dataset.category || document.querySelector(".item-page"));
-};
-
-const ensureDashboardBackLink = () => {
-  if (!shouldShowDashboardBackLink()) return;
-  const nav = document.querySelector(".topbar .nav");
-  if (!nav || nav.querySelector(".back-to-dashboard")) return;
-
-  const link = document.createElement("a");
-  link.href = "dashboard.html";
-  link.textContent = "Dashboard";
-  link.className = "back-to-dashboard";
-  nav.insertBefore(link, nav.firstChild);
-};
-
-if (document.querySelector(".dashboard")) {
-  document.querySelectorAll(dashboardNavTriggerSelector).forEach((link) => {
-    link.addEventListener("click", setDashboardBackLinkFlag);
-  });
-}
-
-ensureDashboardBackLink();
