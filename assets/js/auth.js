@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
     }
   }
+  document.body.classList.toggle("landing-guest", isLandingPage && !isLoggedIn());
 
   document.addEventListener(
     "click",
@@ -113,26 +114,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const gatedAction = event.target.closest(
         ".like, [data-buy], [data-add-cart], [data-open-commission]"
       );
-      const landingExploreTrigger = event.target.closest(
-        '.nav a[href^="pages/"], .gallery-card'
+      const restrictedLandingTrigger = event.target.closest(
+        '.gallery-card[data-restricted="true"]'
       );
-      if (!isLoggedIn() && isLandingPage && landingExploreTrigger) {
+      if (!isLoggedIn() && isLandingPage && restrictedLandingTrigger) {
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
           event.stopImmediatePropagation();
         }
-        document.body.classList.add("landing-locked");
-        openLoginModal();
-        return;
-      }
-      if (!isLoggedIn() && isLandingPage && event.target.closest(".main a, .main button, .gallery-card")) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (typeof event.stopImmediatePropagation === "function") {
-          event.stopImmediatePropagation();
-        }
-        document.body.classList.add("landing-locked");
         openLoginModal();
         return;
       }
@@ -142,9 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
           event.stopImmediatePropagation();
-        }
-        if (isLandingPage) {
-          document.body.classList.add("landing-locked");
         }
         openLoginModal();
       }
