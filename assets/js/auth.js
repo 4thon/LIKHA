@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const auth = window.LikhaAuth;
   const isLoggedIn = () => Boolean(auth?.isLoggedIn?.());
-  const inPages = window.location.pathname.toLowerCase().includes("/pages/");
+  const pathname = window.location.pathname.replace(/\\/g, "/").toLowerCase();
+  const inPages = pathname.includes("/pages/");
+  const authPage = /\/(login|sign-up)\.html$/i.test(pathname);
+  const isLandingPage =
+    pathname === "/" ||
+    pathname.endsWith("/index.html") ||
+    pathname.endsWith("/index.htm");
   const loginPath = inPages ? "login.html" : "pages/login.html";
   const landingPath = inPages ? "../index.html" : "index.html";
 
@@ -57,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open");
+    document.body.classList.remove("landing-locked");
   };
 
   if (document.body.dataset.auth === "required" && !isLoggedIn()) {
@@ -88,8 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isLoggedIn()) {
     document.body.classList.add("logged-in");
-    document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
-    document.querySelectorAll(".nav .dashboard-link").forEach((link) => link.remove());
+    if (!authPage && !isLandingPage) {
+      document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
+    }
   }
 
   document.addEventListener(
@@ -105,12 +113,28 @@ document.addEventListener("DOMContentLoaded", () => {
       const gatedAction = event.target.closest(
         ".like, [data-buy], [data-add-cart], [data-open-commission]"
       );
+      const landingExploreTrigger = event.target.closest(
+        '.nav a[href^="pages/"], .gallery-card'
+      );
+      if (!isLoggedIn() && isLandingPage && landingExploreTrigger) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === "function") {
+          event.stopImmediatePropagation();
+        }
+        document.body.classList.add("landing-locked");
+        openLoginModal();
+        return;
+      }
       if (!gatedAction) return;
       if (!isLoggedIn()) {
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
           event.stopImmediatePropagation();
+        }
+        if (isLandingPage) {
+          document.body.classList.add("landing-locked");
         }
         openLoginModal();
       }

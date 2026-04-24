@@ -112,6 +112,11 @@ body:not(.logged-in) .inbox-badge {
   color: var(--text);
 }
 
+.nav .dashboard-link {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .nav .login {
   color: var(--text);
   font-weight: 500;

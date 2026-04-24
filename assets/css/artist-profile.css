@@ -250,6 +250,21 @@ a {
   color: var(--text);
 }
 
+@media (min-width: 901px) {
+  .modal.modal-left {
+    justify-content: flex-start;
+  }
+
+  .modal.modal-right {
+    justify-content: flex-end;
+  }
+
+  .modal.modal-left .modal-content,
+  .modal.modal-right .modal-content {
+    margin-inline: 4vw;
+  }
+}
+
 .modal-content h2 {
   margin: 0;
   font-size: 22px;

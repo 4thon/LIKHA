@@ -140,3 +140,47 @@ const updateTopbar = () => {
 
 updateTopbar();
 window.addEventListener("scroll", updateTopbar, { passive: true });
+
+const DASHBOARD_RETURN_KEY = "likhaShowDashboardBackLink";
+const DASHBOARD_RETURN_PAGES = new Set([
+  "accessories.html",
+  "jewelry.html",
+  "clothing.html",
+  "home-decor.html",
+  "item.html",
+]);
+
+const getPageName = () => {
+  const path = window.location.pathname.replace(/\\/g, "/").toLowerCase();
+  return path.split("/").pop() || "";
+};
+
+const markDashboardReturn = () => {
+  sessionStorage.setItem(DASHBOARD_RETURN_KEY, "true");
+};
+
+const ensureDashboardLink = () => {
+  if (sessionStorage.getItem(DASHBOARD_RETURN_KEY) !== "true") return;
+  if (!DASHBOARD_RETURN_PAGES.has(getPageName())) return;
+
+  const nav = document.querySelector(".topbar .nav");
+  if (!nav || nav.querySelector(".dashboard-link")) return;
+
+  const link = document.createElement("a");
+  link.href = "dashboard.html";
+  link.textContent = "Dashboard";
+  link.className = "dashboard-link";
+  nav.insertBefore(link, nav.firstChild);
+};
+
+if (document.querySelector(".dashboard")) {
+  document
+    .querySelectorAll(
+      '.dashboard .nav a[href$="accessories.html"], .dashboard .nav a[href$="jewelry.html"], .dashboard .nav a[href$="clothing.html"], .dashboard .nav a[href$="home-decor.html"]'
+    )
+    .forEach((link) => {
+      link.addEventListener("click", markDashboardReturn);
+    });
+}
+
+ensureDashboardLink();

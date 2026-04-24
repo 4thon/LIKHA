@@ -54,7 +54,9 @@
     description: "Kindly email the design you want based on the picture.",
   };
 
-  const item = { ...(store.get(ACTIVE_KEY) || defaultItem) };
+  const item = {
+    ...(store.get(ACTIVE_KEY) || store.get("likhaSelectedItem") || defaultItem),
+  };
   window.LIKHA_ACTIVE_ITEM = item;
 
   const imageEl = document.getElementById("itemImage");
@@ -155,6 +157,7 @@
     item.artistName = match.name;
     window.LIKHA_ACTIVE_ITEM = item;
     store.set(ACTIVE_KEY, item);
+    store.set("likhaSelectedItem", item);
   }
 
   const quickCommissionArtist = document.getElementById("quickCommissionArtist");

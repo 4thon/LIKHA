@@ -21,6 +21,17 @@ body {
   background: var(--bg);
 }
 
+body.landing-locked .page {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+}
+
+body.landing-locked .auth-modal {
+  filter: none;
+  pointer-events: auto;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -71,6 +82,11 @@ a {
 }
 
 .nav .login {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.nav .signup {
   color: var(--text);
   font-weight: 500;
 }

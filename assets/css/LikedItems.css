@@ -16,7 +16,7 @@ body {
 .liked-sections {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 22px;
 }
 
 .filter-bar {
@@ -81,21 +81,20 @@ body.locked .liked-sections {
 }
 
 .liked-grid {
-  column-count: 4;
-  column-gap: 14px;
+  column-count: 5;
+  column-gap: 12px;
   display: block;
 }
 
 .liked-card {
   position: relative;
-  background: #ffffff;
+  background: transparent;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--shadow);
   cursor: pointer;
   display: inline-block;
   width: 100%;
-  margin: 0 0 14px;
+  margin: 0 0 12px;
   break-inside: avoid;
 }
 
@@ -103,6 +102,8 @@ body.locked .liked-sections {
   width: 100%;
   height: auto;
   display: block;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
 }
 
 .liked-card .overlay {
@@ -110,7 +111,7 @@ body.locked .liked-sections {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 12px;
+  padding: 10px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
   color: #ffffff;
   opacity: 0;
@@ -137,7 +138,7 @@ body.locked .liked-sections {
   top: 10px;
   right: 10px;
   border: none;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.88);
   border-radius: 50%;
   width: 34px;
   height: 34px;
@@ -177,11 +178,17 @@ body.locked .liked-sections {
 
 @media (max-width: 768px) {
   .liked-grid {
-    column-count: 2;
+    column-count: 3;
   }
 }
 
 @media (max-width: 520px) {
+  .liked-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 360px) {
   .liked-grid {
     column-count: 1;
   }

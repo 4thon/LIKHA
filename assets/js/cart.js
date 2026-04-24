@@ -128,8 +128,16 @@
     return bestScore >= 1 ? bestArtist : null;
   };
 
-  const openModal = (modal) => {
+  const setModalSide = (modal, side = "center") => {
     if (!modal) return;
+    modal.classList.remove("modal-left", "modal-right");
+    if (side === "left") modal.classList.add("modal-left");
+    if (side === "right") modal.classList.add("modal-right");
+  };
+
+  const openModal = (modal, side = "center") => {
+    if (!modal) return;
+    setModalSide(modal, side);
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -297,7 +305,7 @@
       });
     }
 
-    openModal(itemModal);
+    openModal(itemModal, "center");
   };
 
   const renderList = (container, items, emptyText, sourceLabel) => {
@@ -572,7 +580,7 @@
       if (deliveryAddress) deliveryAddress.value = "";
       if (purchaseMessage) purchaseMessage.value = "";
       if (walletFields) walletFields.hidden = true;
-      openModal(purchaseModal);
+      openModal(purchaseModal, "right");
       return;
     }
 
@@ -593,7 +601,7 @@
       if (itemInput) itemInput.value = item.title || "Handmade Item";
       if (budget) budget.value = "";
       if (message) message.value = "";
-      openModal(commissionModal);
+      openModal(commissionModal, "left");
     }
   });
 

@@ -45,6 +45,7 @@
     const data = extractCardData(card);
     if (store && data) {
       store.set(ACTIVE_KEY, data);
+      store.set("likhaSelectedItem", data);
     }
     const inPages = window.location.pathname.toLowerCase().includes("/pages/");
     const target = inPages ? "item.html" : "pages/item.html";

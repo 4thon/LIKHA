@@ -83,8 +83,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmClose = document.querySelector("[data-confirm-close]");
   const requestIdInput = document.getElementById("commissionRequestId");
 
-  const openModal = (modal) => {
+  const setModalSide = (modal, side = "center") => {
     if (!modal) return;
+    modal.classList.remove("modal-left", "modal-right");
+    if (side === "left") modal.classList.add("modal-left");
+    if (side === "right") modal.classList.add("modal-right");
+  };
+
+  const openModal = (modal, side = "center") => {
+    if (!modal) return;
+    setModalSide(modal, side);
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -335,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmModal.dataset.pendingAction = "true";
     confirmModal.dataset.onConfirm = "";
     confirmModal._confirmHandler = onConfirm;
-    openModal(confirmModal);
+    openModal(confirmModal, "left");
   };
 
   if (confirmYes) {
@@ -409,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
             preview.src = resolvePath(request.referenceImage);
           }
           if (submitButton) submitButton.textContent = "Update Request";
-          openModal(commissionModal);
+          openModal(commissionModal, "right");
         });
       }
 
