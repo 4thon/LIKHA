@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
     pathname.endsWith("/index.htm");
   const loginPath = inPages ? "login.html" : "pages/login.html";
   const landingPath = inPages ? "../index.html" : "index.html";
+  const pageName = pathname.split("/").pop() || "";
+  const categoryPageNames = new Set([
+    "accessories.html",
+    "jewelry.html",
+    "clothing.html",
+    "home-decor.html",
+  ]);
+  const isCategoryPage = inPages && categoryPageNames.has(pageName);
 
   const ensureLoginModal = () => {
     if (document.getElementById("loginModal")) return;
@@ -99,7 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".nav .login, .nav .signup").forEach((link) => link.remove());
     }
   }
-  document.body.classList.toggle("landing-guest", isLandingPage && !isLoggedIn());
+
+  const syncCategoryDashboardLink = () => {
+    if (!isCategoryPage) return;
+    const nav = document.querySelector(".topbar .nav");
+    if (!nav) return;
+    nav.querySelectorAll(".dashboard-link").forEach((link) => link.remove());
+    if (!isLoggedIn()) return;
+
+    const link = document.createElement("a");
+    link.href = "dashboard.html";
+    link.textContent = "Dashboard";
+    link.className = "dashboard-link";
+    nav.appendChild(link);
+  };
+
+  syncCategoryDashboardLink();
 
   document.addEventListener(
     "click",
@@ -114,10 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const gatedAction = event.target.closest(
         ".like, [data-buy], [data-add-cart], [data-open-commission]"
       );
-      const restrictedLandingTrigger = event.target.closest(
-        '.gallery-card[data-restricted="true"]'
+      const landingNavTrigger = event.target.closest(
+        '.nav a[href="pages/accessories.html"], .nav a[href="pages/jewelry.html"], .nav a[href="pages/clothing.html"], .nav a[href="pages/home-decor.html"]'
       );
-      if (!isLoggedIn() && isLandingPage && restrictedLandingTrigger) {
+      const landingCardTrigger = event.target.closest(".gallery-card");
+      if (!isLoggedIn() && isLandingPage && (landingNavTrigger || landingCardTrigger)) {
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {

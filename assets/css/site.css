@@ -122,6 +122,11 @@ body:not(.logged-in) .inbox-badge {
   font-weight: 500;
 }
 
+.nav .signup {
+  color: var(--text);
+  font-weight: 500;
+}
+
 
 .navbar {
   border-bottom: 1px solid #ddd;
