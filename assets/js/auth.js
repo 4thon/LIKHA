@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="auth-modal-content" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
         <button class="auth-modal-close" type="button" data-login-close aria-label="Close">&times;</button>
         <h2 id="loginModalTitle">Login Required</h2>
-        <p>Please log in to like items and unlock the full Likha experience.</p>
+        <p>Please log in to explore the collections, view items, and unlock the full Likha experience.</p>
         <a class="auth-modal-action" href="${loginPath}">Go to Login</a>
       </div>
     `;
@@ -117,6 +117,16 @@ document.addEventListener("DOMContentLoaded", () => {
         '.nav a[href^="pages/"], .gallery-card'
       );
       if (!isLoggedIn() && isLandingPage && landingExploreTrigger) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === "function") {
+          event.stopImmediatePropagation();
+        }
+        document.body.classList.add("landing-locked");
+        openLoginModal();
+        return;
+      }
+      if (!isLoggedIn() && isLandingPage && event.target.closest(".main a, .main button, .gallery-card")) {
         event.preventDefault();
         event.stopPropagation();
         if (typeof event.stopImmediatePropagation === "function") {
