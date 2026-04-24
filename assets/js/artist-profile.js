@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmModal.dataset.pendingAction = "true";
     confirmModal.dataset.onConfirm = "";
     confirmModal._confirmHandler = onConfirm;
-    openModal(confirmModal, "left");
+    openModal(confirmModal, "center");
   };
 
   if (confirmYes) {
@@ -417,7 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
             preview.src = resolvePath(request.referenceImage);
           }
           if (submitButton) submitButton.textContent = "Update Request";
-          openModal(commissionModal, "right");
+          openModal(commissionModal, "center");
         });
       }
 

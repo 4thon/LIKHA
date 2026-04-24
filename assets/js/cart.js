@@ -580,7 +580,7 @@
       if (deliveryAddress) deliveryAddress.value = "";
       if (purchaseMessage) purchaseMessage.value = "";
       if (walletFields) walletFields.hidden = true;
-      openModal(purchaseModal, "right");
+      openModal(purchaseModal, "center");
       return;
     }
 
@@ -601,7 +601,7 @@
       if (itemInput) itemInput.value = item.title || "Handmade Item";
       if (budget) budget.value = "";
       if (message) message.value = "";
-      openModal(commissionModal, "left");
+      openModal(commissionModal, "center");
     }
   });
 
